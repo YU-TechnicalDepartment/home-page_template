@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YU1000のホームページテンプレート</title>
+    <style>
+        /* --- CSS リセットと基本設定 --- */
+        :root {
+            --bg-light: #ffffff;
+            --text-light: #333333;
+            --header-bg-light: #f4f4f4;
+            --link-hover-light: #0056b3;
+
+            --bg-dark: #121212;
+            --text-dark: #e0e0e0;
+            --header-bg-dark: #1e1e1e;
+            --link-hover-dark: #4da6ff;
+        }
+
+        body {
+            margin: 0;
+            padding-top: 60px; /* 固定ヘッダーの高さ分 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- モード別スタイル (JSでbodyタグのclassを切り替える) --- */
+        body.light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+        body.light-mode .header { background-color: var(--header-bg-light); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        body.light-mode a { color: var(--text-light); }
+        body.light-mode a:hover { color: var(--link-hover-light); }
+
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+        body.dark-mode .header { background-color: var(--header-bg-dark); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); }
+        body.dark-mode a { color: var(--text-dark); }
+        body.dark-mode a:hover { color: var(--link-hover-dark); }
+
+
+        /* --- ヘッダーとメニューのスタイル --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: flex-start; /* 要素を左寄せに */
+            align-items: center;
+            padding: 0 20px;
+            gap: 40px; /* ロゴとメニュー全体の間の隙間 */
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+            gap: 20px; /* メニュー項目間の隙間 */
+        }
+
+        .nav-menu li {
+            margin: 0; 
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            padding: 5px 10px;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        /* --- メインコンテンツ領域 --- */
+        .main-content {
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* --- ライト/ダークモード切替トグル (CSS/HTML変更) --- */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            /* テキストとトグルの間のスペースを調整 */
+            gap: 10px; 
+        }
+        
+        /* 追加したテキストラベルのスタイル */
+        .theme-switch-label {
+            font-size: 14px;
+            /* ダークモード時の色を継承するように */
+            color: inherit; 
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 20px;
+            position: relative;
+            width: 40px;
+        }
+        .theme-switch input { display:none; }
+        .slider {
+            background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            background-color: #fff; bottom: 3px; content: ""; height: 14px; left: 3px; position: absolute; transition: .4s; width: 14px; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #2196F3; }
+        input:checked + .slider:before { transform: translateX(20px); }
+    </style>
+</head>
+<body class="light-mode">
+
+    <!-- 固定ヘッダー -->
+    <header class="header">
+        <a href="#" class="logo" onclick="loadContent('home.html'); return false;">YU1000のホームページテンプレート</a>
+        
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="home.html" onclick="loadContent('home.html'); return false;">ホーム</a></li>
+                <li><a href="page2.html" onclick="loadContent('page2.html'); return false;">このページについて</a></li>
+                <li><a href="contact.html" onclick="loadContent('contact.html'); return false;">お問い合わせ</a></li>
+                
+                <!-- ダークモード切り替えトグルをメニュー項目の中間に配置 -->
+                <li class="theme-switch-wrapper">
+                    <!-- 追加したテキストラベル -->
+                    <span class="theme-switch-label">テーマ切替：</span>
+                    <label class="theme-switch" for="checkbox">
+                        <input type="checkbox" id="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- メインコンテンツ領域（ここに他のHTMLファイルの内容が読み込まれる） -->
+    <main class="main-content" id="main-content">
+        <!-- 初期コンテンツはJSで読み込む -->
+    </main>
+
+    <!-- JavaScript for Dark Mode Toggle and Content Loading -->
+    <script>
+        const toggle = document.getElementById('checkbox');
+        const body = document.body;
+        const mainContentArea = document.getElementById('main-content');
+
+        if (!body.classList.contains('dark-mode') && !body.classList.contains('light-mode')) {
+            body.classList.add('light-mode');
+        }
+
+        function toggleDarkMode() {
+            if (body.classList.contains('light-mode')) {
+                body.classList.replace('light-mode', 'dark-mode');
+            } else {
+                body.classList.replace('dark-mode', 'light-mode');
+            }
+        }
+        toggle.addEventListener('change', toggleDarkMode);
+
+        function loadContent(url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    mainContentArea.style.opacity = 0; 
+                    setTimeout(() => {
+                        mainContentArea.innerHTML = html;
+                        mainContentArea.style.opacity = 1;
+                    }, 100);
+                    history.pushState({ path: url }, '', url);
+                })
+                .catch(err => {
+                    mainContentArea.innerHTML = '<h2>コンテンツの読み込みに失敗しました。</h2>';
+                    console.error('Error fetching page: ', err);
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            loadContent('home.html');
+        });
+
+        window.addEventListener('popstate', (event) => {
+            if (location.pathname === '/' || location.pathname.endsWith('index.html')) {
+                 loadContent('home.html');
+            }
+        });
+    </script>
+</body>
+</html>
